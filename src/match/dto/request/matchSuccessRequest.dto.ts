@@ -12,6 +12,6 @@ export class MatchSuccessRequestDto {
     longitude: number;
 
     @IsString()
-    phoneNumber: string;
+    phone_number: string;
 
 }

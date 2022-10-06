@@ -1,4 +1,5 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { NotFoundException } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { MatchRequestDto } from 'src/match/dto/request/matchRequest.dto';
 import { MatchSuccessResponseDto } from 'src/match/dto/response/matchSuccessResponse.dto';
@@ -18,24 +19,20 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
         [index: string]: Socket
     } = {};
 
-    handleConnection(): void {
-        console.log('connected')
-    }
+    handleConnection(): void {}
 
     handleDisconnect(client: Socket): void {
-        console.log('exit');
         delete this.clients[client.id];
     }
 
     @SubscribeMessage('match')
     match(client: Socket, data: MatchRequestDto): void {
-        console.log('match start', data.phoneNumber);
         this.clients[data.phoneNumber] = client;
     }
 
     matchSuccess(dto: MatchSuccessResponseDto, phoneNumber: string) {
-        console.log('match success', phoneNumber);
         const client: Socket = this.clients[phoneNumber];
+        if (!client) throw new NotFoundException('Client not found');
         client.emit("matchSuccess", dto);
     }
 

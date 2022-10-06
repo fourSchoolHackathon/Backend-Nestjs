@@ -9,10 +9,16 @@ export class MatchService {
     constructor(private readonly matchGateway: MatchGateway) {}
 
     match(dto: MatchSuccessRequestDto): void {
-        this.matchGateway.matchSuccess(
-            plainToClass(MatchSuccessResponseDto, dto, {excludeExtraneousValues: true}),
-            dto.phoneNumber
+        const matchSuccessDto = plainToClass(
+            MatchSuccessResponseDto,
+            {
+                ...dto,
+                phoneNumber: dto.phone_number
+            },
+            {excludeExtraneousValues: true}
         );
+
+        this.matchGateway.matchSuccess(matchSuccessDto, dto.phone_number);
     }
 
 }
