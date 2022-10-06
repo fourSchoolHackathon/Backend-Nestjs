@@ -1,6 +1,6 @@
 import { Expose } from "@nestjs/class-transformer";
 
-export class MatchResponseDto {
+export class MatchSuccessResponseDto {
 
     @Expose()
     name: string;
